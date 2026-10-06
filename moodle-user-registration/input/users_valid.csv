@@ -1,0 +1,8 @@
+id,username,email,firstname,lastname,idnumber,password,city,country
+22,ahmad.shoumar,ahmad.shoumar@techvitis.com,Ahmad,Shoumar,24014,AhmadS123,Beirut,LB
+9,daisy.jabbour@techvitis.com,daisy.jabbour@techvitis.com,Daisy,Jabbour,23002,Daisy123,Beirut,LB
+17,line.zeayter,line.zeayter@techvitis.com,Line,Zeayter,24009,Line12345678,Beirut,LB
+19,mohamad.najdy,mohamad.najdy@techvitis.com,Mohamad,Najdy,24011,Mohamad123,Beirut,LB
+11,perla.daghfal,perla.daghfal@techvitis.com,Perla,Daghfal,24003,Perla12345,Beirut,LB
+16,riyad.murad,riyad.murad@techvitis.com,Riyad,Murad,24008,Riyad12345,Beirut,LB
+12,yusuf.shatila,yusuf.shatila@techvitis.com,Yusuf,Shatila,24004,Yusuf12345,Beirut,LB

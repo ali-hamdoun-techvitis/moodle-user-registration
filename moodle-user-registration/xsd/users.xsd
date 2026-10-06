@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="users">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="user" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id" type="idType"/>
+              <xs:element name="username" type="nonEmptyString"/>
+              <xs:element name="email" type="emailType"/>
+              <xs:element name="firstname" type="nonEmptyString"/>
+              <xs:element name="lastname" type="nonEmptyString"/>
+              <xs:element name="idnumber" type="idNumberType"/>
+              <xs:element name="password" type="passwordType"/>
+              <xs:element name="city" type="nonEmptyString"/>
+              <xs:element name="country" type="countryType"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="nonEmptyString">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="idType">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Numeric, 1 to 5 digits -->
+  <xs:simpleType name="idNumberType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{1,5}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Contains @, valid basic email shape, maximum 30 characters -->
+  <xs:simpleType name="emailType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="3"/>
+      <xs:maxLength value="30"/>
+      <xs:pattern value="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- At least 8 chars and contains at least one uppercase and one digit.
+       XSD 1.0 has no look-ahead, so the pattern covers both possible orders. -->
+  <xs:simpleType name="passwordType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="8"/>
+      <xs:pattern value=".*[A-Z].*[0-9].*|.*[0-9].*[A-Z].*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="countryType">
+    <xs:restriction base="xs:string">
+      <xs:length value="2"/>
+      <xs:pattern value="[A-Za-z]{2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

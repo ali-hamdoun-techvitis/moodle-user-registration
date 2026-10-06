@@ -1,0 +1,6 @@
+# Generated build artifacts
+xml/users.xml
+sql/users.sql
+# Secrets / local overrides
+*.local.properties
+*.password

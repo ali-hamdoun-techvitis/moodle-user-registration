@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="moodle-user-registration" default="all" basedir=".">
+
+  <property name="python.exe" value="python3"/>
+  <property name="input.csv" value="input/users_valid.csv"/>
+  <property name="xml.file" value="xml/users.xml"/>
+  <property name="xsd.file" value="xsd/users.xsd"/>
+  <property name="xslt.file" value="xslt/users-to-sql.xsl"/>
+  <property name="sql.file" value="sql/users.sql"/>
+
+  <!-- Safe default: generate SQL for a staging/import table.
+       Do not point this at mdl_user until the Moodle schema and password
+       hashing requirements have been reviewed. -->
+  <property name="db.table" value="mdl_user_import"/>
+
+  <target name="hello">
+    <echo message="Hello World"/>
+  </target>
+
+  <target name="clean">
+    <delete file="${xml.file}" quiet="true"/>
+    <delete file="${sql.file}" quiet="true"/>
+  </target>
+
+  <target name="csv-to-xml" depends="hello">
+    <mkdir dir="xml"/>
+    <exec executable="${python.exe}" failonerror="true">
+      <arg value="scripts/csv_to_xml.py"/>
+      <arg value="${input.csv}"/>
+      <arg value="${xml.file}"/>
+    </exec>
+  </target>
+
+  <target name="validate" depends="csv-to-xml">
+    <echo message="Validating ${xml.file} against ${xsd.file}"/>
+    <xmlvalidate file="${xml.file}" failonerror="true" lenient="false" warn="true">
+      <attribute name="http://apache.org/xml/features/validation/schema" value="true"/>
+      <property name="http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation"
+                value="../xsd/users.xsd"/>
+    </xmlvalidate>
+    <echo message="XML validation passed."/>
+  </target>
+
+  <target name="transform" depends="validate">
+    <mkdir dir="sql"/>
+    <xslt in="${xml.file}" out="${sql.file}" style="${xslt.file}">
+      <param name="table" expression="${db.table}"/>
+    </xslt>
+    <echo message="SQL generated at ${sql.file}"/>
+  </target>
+
+  <!-- Requires a JDBC driver available to Ant (ANT_HOME/lib or -lib).
+       Example properties:
+       ant -Ddb.url=jdbc:mysql://HOST/moodle \
+           -Ddb.user=moodle \
+           -Ddb.password=SECRET sql
+  -->
+  <target name="sql" depends="transform">
+    <fail unless="db.url" message="Set db.url before running the SQL target."/>
+    <fail unless="db.user" message="Set db.user before running the SQL target."/>
+    <fail unless="db.password" message="Set db.password before running the SQL target."/>
+
+    <sql driver="${db.driver}" url="${db.url}" userid="${db.user}"
+         password="${db.password}" src="${sql.file}"
+         autocommit="false" print="true" onerror="abort"/>
+  </target>
+
+  <target name="all" depends="transform"/>
+
+</project>
